@@ -1,0 +1,66 @@
+@startuml classes
+' CampusConnect — Diagramme de classes (modèle métier envisagé)
+skinparam classAttributeIconSize 0
+hide empty members
+
+title CampusConnect — Diagramme de classes (modèle envisagé)
+
+class Etudiant {
+  - id : int
+  - nom : String
+  - prenom : String
+  - email : String
+  + sInscrire(e : Evenement) : Inscription
+}
+
+class Organisateur {
+  - id : int
+  - nom : String
+  - email : String
+  + creerEvenement() : Evenement
+  + publier(e : Evenement)
+}
+
+class Evenement {
+  - id : int
+  - titre : String
+  - description : String
+  - date : Date
+  - heure : Time
+  - lieu : String
+  - categorie : String
+  - nbPlaces : int
+  - statut : StatutEvenement
+  + placesRestantes() : int
+  + estComplet() : boolean
+  + estAVenir() : boolean
+}
+
+class Inscription {
+  - id : int
+  - dateInscription : DateTime
+}
+
+enum StatutEvenement {
+  BROUILLON
+  PUBLIE
+  ANNULE
+}
+
+Organisateur "1" -- "0..*" Evenement : crée >
+Etudiant "1" -- "0..*" Inscription : effectue >
+Evenement "1" -- "0..*" Inscription : concerne <
+Evenement ..> StatutEvenement
+
+note right of Inscription
+  Un étudiant ne peut avoir qu'une seule
+  inscription par événement (RG4).
+  Nombre d'inscriptions ≤ nbPlaces (RG3).
+end note
+
+note bottom of Evenement
+  placesRestantes() = nbPlaces − nombre d'inscriptions
+  Inscription possible seulement si statut = PUBLIE
+  et événement à venir (RG1, RG6).
+end note
+@enduml

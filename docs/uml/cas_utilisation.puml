@@ -1,0 +1,52 @@
+@startuml cas_utilisation
+' CampusConnect — Diagramme de cas d'utilisation
+' Fonctionnalités PRÉVUES (projet en conception, rien n'est développé)
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+title CampusConnect — Diagramme de cas d'utilisation\n(fonctionnalités prévues, non développées)
+
+actor "Étudiant" as Etudiant
+actor "Organisateur" as Organisateur
+
+rectangle "CampusConnect" {
+  ' Epic Découverte des événements
+  usecase "Consulter la liste\ndes événements (US02)" as UC_Liste
+  usecase "Rechercher un événement\npar mot-clé (US01)" as UC_Recherche
+
+  ' Epic Participation
+  usecase "S'inscrire à un\névénement (US03)" as UC_Inscrire
+  usecase "Recevoir une notification\n(catégorie suivie) (US04)" as UC_Notif
+
+  ' Epic Gestion des événements
+  usecase "Créer un événement\n(US08a)" as UC_Creer
+  usecase "Publier un événement\n(US08b)" as UC_Publier
+  usecase "Modifier un événement\n(US07)" as UC_Modifier
+  usecase "Annuler un événement\n(US06)" as UC_Annuler
+}
+
+Etudiant --> UC_Liste
+Etudiant --> UC_Recherche
+Etudiant --> UC_Inscrire
+Etudiant --> UC_Notif
+
+UC_Creer <-- Organisateur
+UC_Publier <-- Organisateur
+UC_Modifier <-- Organisateur
+UC_Annuler <-- Organisateur
+
+' On s'inscrit depuis un événement affiché dans la liste
+UC_Inscrire .> UC_Liste : <<extend>>
+
+note bottom of UC_Inscrire
+  Possible uniquement si l'événement est
+  publié, à venir, non complet, et si
+  l'étudiant n'est pas déjà inscrit.
+end note
+
+legend right
+  US05 « Consulter la liste des inscrits » (WON'T)
+  est hors périmètre de cette version.
+endlegend
+@enduml

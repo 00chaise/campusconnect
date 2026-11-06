@@ -1,0 +1,43 @@
+@startuml sequence_inscription
+' CampusConnect — Diagramme de séquence : inscription à un événement (US03 / SCRUM-10)
+' Participants selon l'architecture ENVISAGÉE (à valider) : client web / serveur / base de données
+autonumber
+skinparam sequenceMessageAlign center
+
+title CampusConnect — Séquence « S'inscrire à un événement » (US03)
+
+actor "Étudiant" as E
+participant "Interface web" as UI
+participant "Serveur" as S
+database "Base de données" as DB
+
+E -> UI : ouvre un événement publié
+UI -> S : demanderEvenement(idEvenement)
+S -> DB : lire événement + nombre d'inscrits
+DB --> S : événement, inscrits
+S --> UI : détails + places restantes
+UI --> E : affiche titre, date, lieu, places restantes
+
+E -> UI : clique sur « S'inscrire »
+UI -> S : inscrire(idEtudiant, idEvenement)
+S -> DB : vérifier places restantes\net inscription existante
+DB --> S : résultat
+
+alt événement complet (places restantes = 0)
+  S --> UI : refus « Événement complet »
+  UI --> E : bouton désactivé +\nmessage « Événement complet »
+else étudiant déjà inscrit
+  S --> UI : refus « déjà inscrit »
+  UI --> E : message : inscription déjà existante
+else inscription possible
+  S -> DB : enregistrer Inscription(idEtudiant, idEvenement)
+  DB --> S : OK
+  S --> UI : confirmation + places restantes − 1
+  UI --> E : message de confirmation
+end
+
+note over S
+  Le serveur vérifie toujours les règles,
+  même si le bouton est désactivé côté interface.
+end note
+@enduml
